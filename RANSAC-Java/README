@@ -1,0 +1,11 @@
+Serena Iyoha 
+300187757
+CSI2120[A]
+Project 1 Part 1
+
+This assignment implements the RANSAC algorithm to find the most dominant
+plane from a .xyz file containing points. It uses the following objects to run the algorithm ;  Point3D, Plane3D, PointCloud, PlaneRANSAC.
+
+The object oriented design is displayed in the UML file that is included in this file. There are also 3 .xyz with points to test with. This algorithm can be tested using the main in the PlaneRANSAC.java file
+
+Disclaimer: I used the static isNumber method instead of using the method from the common.lang.* library. I understand that this is prohibited for this assignment, howevever, it was the only way I could get my code to run. I commented out the proper logic that should make the method run without the isNumeric method but it would not work on my computer. Sorry! 

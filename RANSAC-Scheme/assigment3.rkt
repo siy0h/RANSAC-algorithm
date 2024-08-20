@@ -1,0 +1,147 @@
+#lang scheme
+(require scheme/math)
+
+(define (readXYZ fileIn)
+  (let ((sL (map (lambda s (string-split (car s)))
+                          (cdr (file->lines fileIn)))))
+    (map (lambda (L)
+           (map (lambda (s)
+(if (eqv? (string->number s) #f)
+    s
+    (string->number s))) L)) sL)))
+
+
+(define (pick3 Ps)
+  ;input: list[list[int]]
+  ;output: list[int]
+  ((lambda (x y z) (list x y z)) (list-ref Ps (random (length Ps))) (list-ref Ps (random (length Ps))) (list-ref Ps (random (length Ps)))))
+
+(define (plane P1 P2 P3)
+  ;input: list[list[int]]
+  ;output: list[int]
+  (let ((a1 (- (list-ref P2 0) (list-ref P1 0)))
+        (b1 (- (list-ref P2 1) (list-ref P1 1)))
+        (c1 (- (list-ref P2 2) (list-ref P1 2)))
+        (a2 (- (list-ref P3 0) (list-ref P1 0)))
+        (b2 (- (list-ref P3 1) (list-ref P1 1)))
+        (c2 (- (list-ref P3 2) (list-ref P1 2))))
+    ((lambda (a b c d) (list a b c d))
+     (- (* b1 c2) (* b2 c1))
+     (- (* a2 c1) (* a1 c2))
+     (- (* a1 b2) (* b1 a2))
+     (- (- (- (* (- (* b1 c2) (* b2 c1)) (list-ref P1 0))) (* (- (* b1 c2) (* b2 c1)) (list-ref P1 1))) (* (- (* a1 b2) (* b1 a2)) (list-ref P1 2))))))
+
+
+  ;(let ((a1 (- (list-ref P2 0) (list-ref P1 0)))
+        ;(b1 (- (list-ref P2 1) (list-ref P1 1)))
+        ;(c1 (- (list-ref P2 2) (list-ref P1 2)))
+        ;(a2 (- (list-ref P3 0) (list-ref P1 0)))
+        ;(b2 (- (list-ref P3 1) (list-ref P1 1)))
+        ;(c2 (- (list-ref P3 2) (list-ref P1 2))))
+    
+    ;((lambda (a b c d) (a b c d))) (- (* b1 c2) (* b2 c1)) (- (* a2 c1) (* a1 c2)) (- (* a1 b2) (* b1 a2)) (- (- (- (* a (list-ref P1 0))) (* b (list-ref P1 1) )) (* c (list-ref P1 2) )))))
+  ;p1 := points[0]
+	;p2 := points[1]
+	;p3 := points[2]
+	;a1 := p2.X - p1.X
+	;b1 := p2.Y - p1.Y
+	;c1 := p2.Z - p1.Z
+	;a2 := p3.X - p1.X
+	;b2 := p3.Y - p1.Y
+	;c2 := p3.Z - p1.Z
+	;a := b1*c2 - b2*c1
+	;;b := a2*c1 - a1*c2
+	;c := a1*b2 - b1*a2
+	;d := (-a*p1.X - b*p1.Y - c*p1.Z
+
+;(define (support plane points)
+  ;in: int list[int] list[list[int]]
+ ; (let (formula
+ ; ((lambda (x y z)
+  ; (abs (/ (+ (* (list-ref plane 0) x) (* (list-ref plane 1) y) (* (list-ref plane 2) z)  (list-ref plane 3))
+            ;(sqrt (+ (+ (expt (list-ref plane 0) 2) (expt (list-ref plane 1) 2)) (expt (list-ref plane 2) 2)))))))
+ ; (let k (map formula points)
+     
+  
+ ; )
+
+(define (ransacNumberOfIterations confidence percentage)
+  ;in float int
+  ;out int
+  ;(let
+      ;(( x (log(/ (- 1 (confidence) (log (- 1 (expt (/ percentage 100) 3))))))) x)))
+  (let ((x (log (/ (- 1 confidence) (log (- 1 (expt (/ percentage 100) 3))))))) x))
+
+
+
+  ;  input support int, plane list[int], points list[int]
+  ;output tuple(int. list[int])
+
+
+;(define x (readXYZ "Point_Cloud_1_No_Road_Reduced.xyz"))
+; (define y (pick3 x))
+;(define z (plane (list-ref y 0) (list-ref y 1) (list-ref y 2)))
+
+          
+(define (count L criteria)
+  (let ((count 0))
+    (cond ((null? L)
+                  0)
+          ((< criteria (car L))
+           (+ count 1)
+           (count (cdr L) ))
+          (else (count (cdr L) )))))
+
+
+(define (count2 number lst)
+  ; Input: number - the number to compare against
+  ;        lst - the list of elements to count
+  ; Output: count - the number of elements less than number in lst
+  (let ((count 0))
+    (cond ((null? lst) count) ; if lst is empty, return count
+          ((< (car lst) number) ; if the first element is less than number
+           (+ count 1)) ; increment count
+           (count2 number (cdr lst)) ; recurse on the rest of the list
+          (else (count2 number (cdr lst)))))) ; recurse on the rest of the list
+
+(define (count3 number L)
+  (cond ((null? L) 0)
+      ((< (car L) number) 1)
+      (+ (count3 number (cdr L)))
+      (else (count3 number (cdr L)))))
+
+(define (count4 number L)
+  (if (null? L)
+      0
+      (if (<= (car L) number)
+          (+ 1 (count4 number (cdr L)))
+          (count4 number (cdr L)))))
+
+
+
+;(define (support plane eps points)
+  ;(let ((values (map (lambda (point)
+                       ;(abs (/ (+ (* (list-ref plane 0) (list-ref point 0))
+                                   ;(* (list-ref plane 1) (list-ref point 1)))
+                                 ;(+ (* (list-ref plane 2) (list-ref point 2))
+                                    ;(list-ref plane 3)))
+                                 ;(sqrt (+ (expt (list-ref plane 0) 2)
+                                          ;(expt (list-ref plane 1) 2)
+                                          ;(expt (list-ref plane 2) 2)))))) points)))
+    ;(count4 eps values))
+
+(define (support2 plane eps points)
+  (let ((values (map (lambda (point)
+                       (abs (/ (+ (* (list-ref plane 0) (list-ref point 0))
+                                   (* (list-ref plane 1) (list-ref point 1)))
+                                 (+ (* (list-ref plane 2) (list-ref point 2))
+                                    (list-ref plane 3)))
+                                 (sqrt (+ (expt (list-ref plane 0) 2)
+                                          (expt (list-ref plane 1) 2)
+                                          (expt (list-ref plane 2) 2)))))) points)))
+    (count4 eps values))
+
+
+;(define( distance point plane)
+   ;(lamda ((x y z) ((list-ref point 0) (list-ref point 1) (list-ref point 2))) (abs(/(+(+(* (list-ref plane 0) x)(* (list-ref plane 1) y)) (+(* (list-ref plane 2) z) (list-ref plane 3))) 
+      ;  (sqrt (+ (+(expt (list-ref plane 0) 2)(expt (list-ref plane 1) 2))(expt (list-ref plane 2) 2)) )))))
